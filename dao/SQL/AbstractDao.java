@@ -60,8 +60,9 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 
     public void add(List<T> entity) {
         Session session = getSession();
+
         for (T e : entity) {
-            session.save(e);
+            session.persist(e);
         }
         session.flush();
         session.clear();

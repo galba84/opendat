@@ -4,56 +4,101 @@
 
 package com.opendat.util.CompanyServiceTools.ParseXml;
 
+import com.opendat.dao.SQL.CompanyDAO;
+import com.opendat.dao.XML.CompanyDb.CompanyXmlReader;
+import com.opendat.dao.XML.CompanyDb.CompanyXmlReaderImpl;
+import com.opendat.model.NoSql.ApplicationEnviroupmentValiables.CompanyDatabaseStructureInfo;
+import com.opendat.model.NoSql.CompanyHash;
+import com.opendat.model.NoSql.ResultSet.CompanyRecordReadResult;
+import com.opendat.model.SqlDb.Company.Company;
+import com.opendat.model.SqlDb.Log.LogEvent;
+import com.opendat.service.LogEventService;
+import com.opendat.util.DataStructuresOperators.CompanyDatabaseStructureInfoOperator;
+import com.opendat.util.Tools;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.XMLConstants;
-import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.events.StartElement;
-import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stax.StAXSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.InetAddress;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
-@Component
+@Service
 
 public class ParseXmlCompanyServiceTools {
+    @Autowired
+    CompanyDAO companyDAO;
+    @Autowired
+    Tools tools;
+    @Autowired
+    LogEventService logEventService;
 
-    public XMLEventReader MoveCoursorOfEventReaderToOffsetPosition(XMLEventReader xmlEventReader, long startReadOffest) {
-        long position = 0;
-        while ((position < startReadOffest) & xmlEventReader.hasNext()) {
-            try {
-                XMLEvent xmlEvent = xmlEventReader.nextEvent();
-
-                if (xmlEvent.isStartElement()) {
-                    StartElement startElement = xmlEvent.asStartElement();
-                    if (startElement.getName().getLocalPart().equals("RECORD")) {
-                        position++;
-                        while (position < startReadOffest) {
-                            xmlEvent = xmlEventReader.nextEvent();
-                            if (xmlEvent.isStartElement()) {
-                                startElement = xmlEvent.asStartElement();
-                                if (startElement.getName().getLocalPart().equals("RECORD"))
-                                    position++;
-
-                            }
-                            xmlEvent = xmlEventReader.nextEvent();
-
-                        }
-                    }
-
-                }
-            } catch (Exception exc) {
-            }
-        }
-        return xmlEventReader;
+    public int countRecords(String filename, Date date) {
+        CompanyXmlReaderImpl companyXmlReader = new CompanyXmlReaderImpl();
+        companyXmlReader.Open(filename, date);
+        int res = (int) companyXmlReader.countRecords();
+        companyXmlReader.CloseReader();
+        return res;
     }
 
-    public boolean SchemaValidation(String xmlFilename, String schemaFilename) {
+    //    public void  updateCompanyDb(String filename, Date date, List<CompanyHash> companiesHash) {
+//        CompanyDatabaseStructureInfo companyDatabaseStructureInfo = new CompanyDatabaseStructureInfo(date, filename);
+//        UpdateCompanyDatabase updateCompanyDatabase = new UpdateCompanyDatabase();
+//        CompanyXmlReaderImpl companyXmlReader = new CompanyXmlReaderImpl();
+//        int recordsNumber = countRecords(filename, date);
+//        for (int i = 0; i < recordsNumber; i++) {
+//        }
+//    }
+    @Transactional
+    public CompanyDatabaseStructureInfo createCompanyDb(String filename, Date date) {
+        //     int recordsCount = countRecords(filename, date);
+        CompanyDatabaseStructureInfo companyDatabaseStructureInfo = new CompanyDatabaseStructureInfo(date, filename);
+        CompanyDatabaseStructureInfoOperator companyDatabaseStructureInfoOperator =
+                new CompanyDatabaseStructureInfoOperator(companyDatabaseStructureInfo);
+        CompanyXmlReader companyXmlReader = new CompanyXmlReaderImpl();
+        companyXmlReader.Open(filename, date);
+        List<Company> companyList = new LinkedList<>();
+        CompanyRecordReadResult companyRecordReadResult;
+        Company company;
+        for (int i = 0; i < 1607880; i++) {
+
+            companyRecordReadResult = companyXmlReader.readNextRecord();
+            companyDatabaseStructureInfoOperator.update(companyRecordReadResult);
+            company = companyRecordReadResult.getCompany();
+            companyList.add(company);
+            if ((i % 1000)==0) {
+                companyDAO.addCompanies(companyList);
+                companyList.clear();
+
+                LocalDateTime now1 = LocalDateTime.now();
+                try {
+                    InetAddress iAddress = InetAddress.getLocalHost();
+                    String currentIp = iAddress.getHostAddress();
+                    LogEvent logEvent = new LogEvent("record # " + i, now1, currentIp);
+                    logEventService.save(logEvent);
+                }
+                catch(Exception e){}
+            }
+        }
+        if (companyList.size() > 0)
+            companyDAO.addCompanies(companyList);
+
+        return companyDatabaseStructureInfoOperator.get();
+    }
+
+    public boolean schemaValidation(String xmlFilename, String schemaFilename) {
         try {
             XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(xmlFilename));
 

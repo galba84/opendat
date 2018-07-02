@@ -13,6 +13,7 @@ public interface LogEventService {
 	void save(LogEvent logEvent);
 	List<LogEvent> findAll();
 	void message2log(String message);
+	void delete(String id);
 
 	
 }

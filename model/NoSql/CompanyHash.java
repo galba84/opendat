@@ -17,7 +17,7 @@ public class CompanyHash {
     public int hashCode;
 
     @Column(name = "EDRPOU")
-    public int EDRPOU;
+    public String EDRPOU;
 
     public int getId() {
         return id;
@@ -35,11 +35,11 @@ public class CompanyHash {
         this.hashCode = hashCode;
     }
 
-    public int getEDRPOU() {
+    public String getEDRPOU() {
         return EDRPOU;
     }
 
-    public void setEDRPOU(int EDRPOU) {
+    public void setEDRPOU(String EDRPOU) {
         this.EDRPOU = EDRPOU;
     }
 }

@@ -14,4 +14,8 @@ public interface EventLogDAO {
 
     List<LogEvent> list();
 
+    void delete(String id);
+
+    LogEvent getLogEventById(int id);
+
 }

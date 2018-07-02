@@ -5,13 +5,14 @@
 package com.opendat.controller;
 
 
+import com.opendat.TestNewFunc.TestNewFuncService;
 import com.opendat.model.NoSql.Enumerations.ErrorCodes.EXIT_CODE;
 import com.opendat.model.SqlDb.Company.Company;
 import com.opendat.model.SqlDb.Log.LogEvent;
 import com.opendat.service.*;
 import com.opendat.service.Auth.UserProfileService;
 import com.opendat.service.Auth.UserService;
-import com.opendat.util.CompanySearchRequestValidator;
+import com.opendat.util.Validators.CompanySearchRequestValidator;
 import com.opendat.util.Tools;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,7 @@ public class SearchController {
     @Autowired
     Tools tools;
 
+
     @RequestMapping(value = "search", method = {RequestMethod.GET, RequestMethod.POST})
     public String search(@RequestParam(required = false) String pattern, @RequestParam("RadioGroupSearch") String column, Model model) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
@@ -61,9 +63,9 @@ public class SearchController {
 
 
         if (searchRequesrValidationChechResult == 0) {
-            //           List<Company> lc = companyService.SearchCompanies(pattern, column);
-            model.addAttribute("infolabel", "search " + pattern + " in " + column + ". Found " + "lc.size()" + " records");
-            //       model.addAttribute("contacts",lc);
+            List<Company> lc = companyService.SearchCompanies(pattern, column);
+            model.addAttribute("infolabel", "search \"" + pattern + "\" in " + column + ". Found " + lc.size() + " records");
+            model.addAttribute("contacts", lc);
         } else {
             model.addAttribute("infolabel", "search error: " + EXIT_CODE.getNameByCode(searchRequesrValidationChechResult) + " Please try again");
         }

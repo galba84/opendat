@@ -25,7 +25,7 @@ public class LogEvent implements Serializable {
     @Id
     @Column(name = "idL")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     //    @JoinColumn(name = "id")
 
@@ -49,11 +49,11 @@ public class LogEvent implements Serializable {
 
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

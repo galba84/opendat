@@ -4,13 +4,9 @@
 
 package com.opendat.service;
 
-
 import com.opendat.model.SqlDb.Company.Company;
 import com.opendat.model.NoSql.CompanyStatistic;
-import com.opendat.model.NoSql.CompanyUpdateStatistic;
-import com.opendat.model.NoSql.NaturanLanguageProcessing.ListOfUnicLegalForms;
 
-import java.util.Date;
 import java.util.List;
 
 public interface CompanyService {
@@ -27,11 +23,9 @@ public interface CompanyService {
 
     List<Company> SearchCompanies(String pattern, String column);
 
-
-    List<Company> SetHashCodes();
     CompanyStatistic Statistic();
 
-    List<Company> GetNewRecordsFromXml(String filename, Date date, Integer amount);
-    ListOfUnicLegalForms SmartParseXml (String filename, Date date, Integer amount);
+    Company getCompanyById(int id);
+
 
 }

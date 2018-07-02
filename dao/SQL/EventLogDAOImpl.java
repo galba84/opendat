@@ -4,6 +4,8 @@
 
 package com.opendat.dao.SQL;
 
+import com.google.inject.internal.Strings;
+import com.opendat.model.SqlDb.Company.Company;
 import com.opendat.model.SqlDb.Log.LogEvent;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
@@ -29,4 +31,16 @@ public class EventLogDAOImpl extends AbstractDao<Integer, LogEvent> implements E
         crit.addOrder(Order.asc("id"));
         return (List<LogEvent>) crit.list();
     }
+
+    @Override
+    public void delete(String id) {
+        LogEvent logEvent = getLogEventById(Integer.parseInt(id));
+        super.delete(logEvent);
+    }
+
+    @Override
+    public LogEvent getLogEventById(int id) {
+        return getByKey(id);
+    }
+
 }

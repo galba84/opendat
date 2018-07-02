@@ -15,6 +15,89 @@ import java.util.List;
 @Entity
 @Table(name = "Company")
 public class Company implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", columnDefinition = "INTEGER(18)")
+    private int id;
+    @Column(columnDefinition = "VARCHAR(1024)")
+    private String NAME;
+    @Column(columnDefinition = "VARCHAR(1024)")
+    private String SHORT_NAME;
+    @Column(name ="EDRPOU", columnDefinition = "VARCHAR(8)")
+    private String EDRPOU;
+    @Column(columnDefinition = "VARCHAR(512)")
+    private String ADDRESS;
+    @Column(columnDefinition = "VARCHAR(128)")
+    private String BOSS;
+    @Column(columnDefinition = "VARCHAR(255)")
+    private String KVED;
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String STAN;
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String FOUNDERS;
+    @Column(name = "insertDate")
+    @Temporal(TemporalType.DATE)
+    private Date date;
+    @Column(name = "hashCode", columnDefinition = "INTEGER(12)")
+    private Integer hashCode;
+    @Column(name = "depracatedDate")
+    @Temporal(TemporalType.DATE)
+    private Date depracatedDate;
+    @Column(name = "archived")
+    private boolean archived;
+
+    public int getHashCode() {
+        return hashCode;
+    }
+
+    public void setHashCode(int hashCode) {
+        this.hashCode = hashCode;
+    }
+
+
+    public Company() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Company company = (Company) o;
+
+        return new EqualsBuilder()
+                .append(id, company.id)
+                .append(NAME, company.NAME)
+                .append(SHORT_NAME, company.SHORT_NAME)
+                .append(EDRPOU, company.EDRPOU)
+                .append(ADDRESS, company.ADDRESS)
+                .append(BOSS, company.BOSS)
+                .append(KVED, company.KVED)
+                .append(STAN, company.STAN)
+                .append(FOUNDERS, company.FOUNDERS)
+                .append(date, company.date)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        String all = new String();
+        all = (SHORT_NAME + SHORT_NAME + EDRPOU + ADDRESS + BOSS + KVED + STAN + FOUNDERS);
+        return new HashCodeBuilder(17, 37)
+                .append(all)
+                .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+
+        return (SHORT_NAME + SHORT_NAME + EDRPOU + ADDRESS + BOSS + KVED + STAN + FOUNDERS);
+    }
+
+
     public int getId() {
         return id;
     }
@@ -114,86 +197,4 @@ public class Company implements Serializable {
     public void setArchived(boolean archived) {
         this.archived = archived;
     }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", columnDefinition = "INTEGER(18)")
-    private int id;
-    @Column(columnDefinition = "VARCHAR(1024)")
-    private String NAME;
-    @Column(columnDefinition = "VARCHAR(1024)")
-    private String SHORT_NAME;
-    @Column(name ="EDRPOU", columnDefinition = "VARCHAR(8)")
-    private String EDRPOU;
-    @Column(columnDefinition = "VARCHAR(512)")
-    private String ADDRESS;
-    @Column(columnDefinition = "VARCHAR(128)")
-    private String BOSS;
-    @Column(columnDefinition = "VARCHAR(255)")
-    private String KVED;
-    @Column(columnDefinition = "VARCHAR(64)")
-    private String STAN;
-    @Column(columnDefinition = "MEDIUMTEXT")
-    private String FOUNDERS;
-    @Column(name = "insertDate")
-    @Temporal(TemporalType.DATE)
-    private Date date;
-    @Column(name = "hashCode", columnDefinition = "INTEGER(12)")
-    private Integer hashCode;
-    @Column(name = "depracatedDate")
-    @Temporal(TemporalType.DATE)
-    private Date depracatedDate;
-    @Column(name = "archived")
-    private boolean archived;
-
-    public int getHashCode() {
-        return hashCode;
-    }
-
-    public void setHashCode(int hashCode) {
-        this.hashCode = hashCode;
-    }
-
-
-    public Company() {
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Company company = (Company) o;
-
-        return new EqualsBuilder()
-                .append(id, company.id)
-                .append(NAME, company.NAME)
-                .append(SHORT_NAME, company.SHORT_NAME)
-                .append(EDRPOU, company.EDRPOU)
-                .append(ADDRESS, company.ADDRESS)
-                .append(BOSS, company.BOSS)
-                .append(KVED, company.KVED)
-                .append(STAN, company.STAN)
-                .append(FOUNDERS, company.FOUNDERS)
-                .append(date, company.date)
-                .isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-
-        String all = new String();
-        all = (SHORT_NAME + SHORT_NAME + EDRPOU + ADDRESS + BOSS + KVED + STAN + FOUNDERS);
-        return new HashCodeBuilder(17, 37)
-                .append(all)
-                .toHashCode();
-    }
-
-    @Override
-    public String toString() {
-
-        return (SHORT_NAME + SHORT_NAME + EDRPOU + ADDRESS + BOSS + KVED + STAN + FOUNDERS);
-    }
-
 }

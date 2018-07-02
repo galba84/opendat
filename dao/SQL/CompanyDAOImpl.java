@@ -65,12 +65,8 @@ public class CompanyDAOImpl extends AbstractDao<Integer, Company> implements Com
     @Override
     public List<Company> list(String pattern, String column) {
         Criteria crit = createEntityCriteria();
-        if (column.equalsIgnoreCase("EDRPOU")) {
-            int intValue = Integer.parseInt(pattern);
-            crit.add(Restrictions.like(column, intValue));
-        } else {
-            crit.add(Restrictions.like(column, "%" + pattern + "%"));
-        }
+
+        crit.add(Restrictions.like(column, "%" + pattern + "%"));
         crit.setFirstResult(0);
         crit.setMaxResults(1000);
         return (List<Company>) crit.list();

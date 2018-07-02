@@ -78,11 +78,13 @@ public class Tools {
         return new long[]{hours, minutes, secs};
     }
 
+
+
     public String getSha256hex(String originalString) {
         return DigestUtils.md5Digest(originalString.getBytes(StandardCharsets.UTF_8)).toString();
     }
 
-    public   HashMap<Integer, String>  ConvertToHesh(List<String> stringList) {
+    public   HashMap<Integer, String>  stringToHash(List<String> stringList) {
         HashMap<Integer, String> hashMap = new HashMap<Integer, String>();
         for (String s : stringList
                 ) {

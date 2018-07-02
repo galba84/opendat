@@ -12,6 +12,7 @@ import com.opendat.model.SqlDb.Log.LogEvent;
 import com.opendat.service.*;
 import com.opendat.service.Auth.UserProfileService;
 import com.opendat.service.Auth.UserService;
+import com.opendat.service.test.MailService;
 import com.opendat.util.Authentification.AuthTools;
 import com.opendat.util.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,8 @@ public class HelloWorldController {
     Tools tools;
     @Autowired
     AuthTools authTools;
+    @Autowired
+    MailService mailService;
 
     static final int DEFAULT_GROUP_ID = -1;
     private static final int ITEMS_PER_PAGE = 8;
@@ -71,6 +74,7 @@ public class HelloWorldController {
         LocalDateTime now1 = LocalDateTime.now();
         LogEvent logEvent = new LogEvent("Message was sent" + message + " email " + email + " name " + name, now1, ip);
         logEventService.save(logEvent);
+        mailService.sendEmail(message + "\n email " + email + "\n name " + name +"\n "+ now1 +"\n "+ ip);
         model.addAttribute("infolabel", "Message was sent");
         return "index";
     }
